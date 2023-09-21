@@ -1,0 +1,40 @@
+# Désactiver l'affichage des erreurs
+php_flag display_errors off
+
+# Activer la réécriture d'URL
+RewriteEngine On
+
+# Rediriger vers la page d'accueil si l'URL se termine par un slash
+RewriteCond %{REQUEST_FILENAME} !-f
+RewriteCond %{REQUEST_URI} (.*)$
+RewriteRule ^(.+)/$ /$1 [L,R=301]
+
+# Rediriger toutes les demandes HTTP vers HTTPS
+RewriteCond %{HTTPS} off
+RewriteRule ^ https://%{HTTP_HOST}%{REQUEST_URI} [L,R=301]
+
+# Rediriger les pages d'accueil différentes vers index.php
+DirectoryIndex index.php
+
+# Gérer les erreurs 404 en redirigeant vers une page d'erreur personnalisée
+ErrorDocument 404 /erreur-404.php
+
+# Activer la compression GZIP pour améliorer les performances
+<IfModule mod_deflate.c>
+    AddOutputFilterByType DEFLATE text/html text/plain text/xml text/css text/javascript application/javascript application/x-javascript application/json
+</IfModule>
+
+# Protéger le fichier .htaccess
+<Files .htaccess>
+    Require all denied
+</Files>
+
+# Protéger les fichiers de configuration sensibles
+<FilesMatch "^\.([Hh][Tt])">
+    Require all denied
+</FilesMatch>
+
+# Bloquer l'accès aux répertoires sensibles
+<DirectoryMatch "^\.git">
+    Require all denied
+</DirectoryMatch>
